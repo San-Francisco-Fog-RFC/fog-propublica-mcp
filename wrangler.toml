@@ -1,7 +1,7 @@
 name = "fog-propublica-mcp"
 main = "src/propublica_mcp/server.py"
-compatibility_date = "2024-01-01"
-compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-09-23"
+compatibility_flags = ["python_workers"]
 
 [vars]
 LOG_LEVEL = "INFO"
