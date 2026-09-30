@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "propublica-mcp": {
+      "command": "python",
+      "args": ["-m", "src.propublica_mcp.server"],
+      "env": {
+        "PYTHONPATH": "."
+      },
+      "description": "ProPublica Nonprofit Explorer MCP Server - Access Form 990 data for CRM integration and nonprofit prospect research"
+    }
+  }
+} 

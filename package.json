@@ -1,0 +1,40 @@
+{
+  "name": "fog-propublica-mcp",
+  "version": "0.1.5",
+  "description": "A Model Context Protocol (MCP) server that provides access to ProPublica's Nonprofit Explorer API for nonprofit organization search and analysis",
+  "main": "src/propublica_mcp/server.py",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'No build step required for Python MCP server'",
+    "deploy": "wrangler deploy",
+    "dev": "python -m propublica_mcp.server",
+    "start": "python -m propublica_mcp.server",
+    "test": "pytest tests/ -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asachs01/propublica-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "propublica",
+    "nonprofit",
+    "api",
+    "form-990",
+    "crm",
+    "fastmcp"
+  ],
+  "author": "asachs01",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asachs01/propublica-mcp/issues"
+  },
+  "homepage": "https://github.com/asachs01/propublica-mcp#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+} 

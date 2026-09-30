@@ -1,0 +1,94 @@
+services:
+  propublica-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE:-$(date -u +'%Y-%m-%dT%H:%M:%SZ')}
+        VERSION: ${VERSION:-latest}
+        VCS_REF: ${VCS_REF:-$(git rev-parse --short HEAD)}
+    image: ghcr.io/asachs01/propublica-mcp:${VERSION:-latest}
+    container_name: propublica-mcp-server
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      # Logging configuration
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PYTHONUNBUFFERED=1
+      
+      # Optional: API rate limiting (requests per minute)
+      - API_RATE_LIMIT=${API_RATE_LIMIT:-60}
+      
+      # Optional: ProPublica API base URL (rarely needs changing)
+      - PROPUBLICA_API_BASE_URL=${PROPUBLICA_API_BASE_URL:-https://projects.propublica.org/nonprofits/api/v2}
+    
+    # Volumes for persistence and configuration
+    volumes:
+      # Mount configuration if you want to customize MCP settings
+      - ./config:/app/config:ro
+      
+      # Optional: Mount logs directory for persistence
+      - ./logs:/app/logs
+    
+    # Network configuration
+    networks:
+      - mcp-network
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('https://projects.propublica.org/nonprofits/api/v2/search.json?q=test', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Security
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/cache
+    
+    # Ports (mainly for debugging - MCP uses stdin/stdout)
+    ports:
+      - "${MCP_PORT:-8000}:8000"
+
+  # Optional: Add a reverse proxy for HTTP interface
+  nginx:
+    image: nginx:alpine
+    container_name: propublica-mcp-proxy
+    restart: unless-stopped
+    profiles:
+      - http-interface
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - mcp-network
+    depends_on:
+      - propublica-mcp
+
+# Named volumes
+volumes:
+  mcp_cache:
+    driver: local
+
+# Networks
+networks:
+  mcp-network:
+    driver: bridge 

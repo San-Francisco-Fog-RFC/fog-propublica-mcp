@@ -1,0 +1,30 @@
+spec:
+  name: propublica-mcp
+  services:
+  - name: propublica-mcp
+    github:
+      repo: asachs01/propublica-mcp
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    dockerfile_path: Dockerfile
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+    - key: PORT
+      value: "8080"
+      scope: RUN_TIME
+    - key: LOG_LEVEL
+      value: "INFO"
+      scope: RUN_TIME
+    - key: API_RATE_LIMIT
+      value: "60"
+      scope: RUN_TIME
+    - key: PROPUBLICA_API_BASE_URL
+      value: "https://projects.propublica.org/nonprofits/api/v2"
+      scope: RUN_TIME
+    run_command: "python -m propublica_mcp.server"
+  alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED 
