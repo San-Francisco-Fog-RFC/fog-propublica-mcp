@@ -1,23 +1,9 @@
 name = "fog-propublica-mcp"
-main = "src/propublica_mcp/server.py"
+main = "src/worker.ts"
 compatibility_date = "2024-09-23"
-compatibility_flags = ["python_workers"]
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
 
 [vars]
 LOG_LEVEL = "INFO"
-API_RATE_LIMIT = "60"
 PROPUBLICA_API_BASE_URL = "https://projects.propublica.org/nonprofits/api/v2"
-
-# Enable Python support through custom build
-[build]
-command = "echo 'Python MCP server - no build step required'"
-cwd = "."
-
-# Runtime configuration for Python
-[env.production.vars]
-LOG_LEVEL = "INFO"
-API_RATE_LIMIT = "60"
-
-[env.staging.vars]
-LOG_LEVEL = "DEBUG"
-API_RATE_LIMIT = "30" 
